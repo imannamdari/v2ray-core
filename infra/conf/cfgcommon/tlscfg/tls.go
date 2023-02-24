@@ -22,6 +22,8 @@ type TLSConfig struct {
 	DisableSystemRoot                bool                  `json:"disableSystemRoot"`
 	PinnedPeerCertificateChainSha256 *[]string             `json:"pinnedPeerCertificateChainSha256"`
 	VerifyClientCertificate          bool                  `json:"verifyClientCertificate"`
+	EnableEch                        bool                  `json:"enableEch"`
+	EchSetting                       *TLSEchSetting        `json:"echSetting"`
 }
 
 // Build implements Buildable.
@@ -56,6 +58,11 @@ func (c *TLSConfig) Build() (proto.Message, error) {
 			}
 			config.PinnedPeerCertificateChainSha256 = append(config.PinnedPeerCertificateChainSha256, hashValue)
 		}
+	}
+
+	config.EnableEch = c.EnableEch
+	if c.EchSetting != nil {
+		config.EchSetting, _ = c.EchSetting.Build()
 	}
 
 	return config, nil
@@ -111,4 +118,16 @@ func readFileOrString(f string, s []string) ([]byte, error) {
 		return []byte(strings.Join(s, "\n")), nil
 	}
 	return nil, newError("both file and bytes are empty.")
+}
+
+type TLSEchSetting struct {
+	DnsAddr string `json:"dnsAddr"`
+}
+
+func (c *TLSEchSetting) Build() (*tls.ECHSetting, error) {
+	setting := new(tls.ECHSetting)
+
+	setting.DnsAddr = c.DnsAddr
+
+	return setting, nil
 }
