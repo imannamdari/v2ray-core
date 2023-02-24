@@ -6,18 +6,18 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	"github.com/v2fly/v2ray-core/v5/common/serial"
-	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon"
-	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/loader"
-	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/socketcfg"
-	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/tlscfg"
-	"github.com/v2fly/v2ray-core/v5/transport/internet"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/domainsocket"
-	httpheader "github.com/v2fly/v2ray-core/v5/transport/internet/headers/http"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/http"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/kcp"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/tcp"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/websocket"
+	"github.com/imannamdari/v2ray-core/v5/common/serial"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/loader"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/socketcfg"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/tlscfg"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/domainsocket"
+	httpheader "github.com/imannamdari/v2ray-core/v5/transport/internet/headers/http"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/http"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/kcp"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/tcp"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/websocket"
 )
 
 var (

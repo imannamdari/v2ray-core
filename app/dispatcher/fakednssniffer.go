@@ -7,11 +7,11 @@ import (
 	"context"
 	"strings"
 
-	core "github.com/v2fly/v2ray-core/v5"
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/common/session"
-	"github.com/v2fly/v2ray-core/v5/features/dns"
+	core "github.com/imannamdari/v2ray-core/v5"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/session"
+	"github.com/imannamdari/v2ray-core/v5/features/dns"
 )
 
 // newFakeDNSSniffer Creates a Fake DNS metadata sniffer

@@ -6,10 +6,10 @@ package dns
 import (
 	"golang.org/x/net/dns/dnsmessage"
 
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/common/strmatcher"
-	"github.com/v2fly/v2ray-core/v5/common/uuid"
-	"github.com/v2fly/v2ray-core/v5/features/dns"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/strmatcher"
+	"github.com/imannamdari/v2ray-core/v5/common/uuid"
+	"github.com/imannamdari/v2ray-core/v5/features/dns"
 )
 
 var typeMap = map[DomainMatchingType]strmatcher.Type{

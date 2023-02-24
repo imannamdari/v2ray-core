@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/dice"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/dice"
 )
 
 // RandomStrategy represents a random balancing strategy

@@ -3,10 +3,10 @@ package simplified
 import (
 	"context"
 
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/protocol"
-	"github.com/v2fly/v2ray-core/v5/common/serial"
-	"github.com/v2fly/v2ray-core/v5/proxy/shadowsocks"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/protocol"
+	"github.com/imannamdari/v2ray-core/v5/common/serial"
+	"github.com/imannamdari/v2ray-core/v5/proxy/shadowsocks"
 )
 
 func init() {

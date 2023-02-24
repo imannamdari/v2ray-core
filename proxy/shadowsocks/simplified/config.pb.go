@@ -1,14 +1,15 @@
 package simplified
 
 import (
-	net "github.com/v2fly/v2ray-core/v5/common/net"
-	packetaddr "github.com/v2fly/v2ray-core/v5/common/net/packetaddr"
-	_ "github.com/v2fly/v2ray-core/v5/common/protoext"
-	shadowsocks "github.com/v2fly/v2ray-core/v5/proxy/shadowsocks"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	net "github.com/imannamdari/v2ray-core/v5/common/net"
+	packetaddr "github.com/imannamdari/v2ray-core/v5/common/net/packetaddr"
+	_ "github.com/imannamdari/v2ray-core/v5/common/protoext"
+	shadowsocks "github.com/imannamdari/v2ray-core/v5/proxy/shadowsocks"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (

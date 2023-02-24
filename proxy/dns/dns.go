@@ -8,19 +8,19 @@ import (
 
 	"golang.org/x/net/dns/dnsmessage"
 
-	core "github.com/v2fly/v2ray-core/v5"
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/buf"
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	dns_proto "github.com/v2fly/v2ray-core/v5/common/protocol/dns"
-	"github.com/v2fly/v2ray-core/v5/common/session"
-	"github.com/v2fly/v2ray-core/v5/common/signal"
-	"github.com/v2fly/v2ray-core/v5/common/strmatcher"
-	"github.com/v2fly/v2ray-core/v5/common/task"
-	"github.com/v2fly/v2ray-core/v5/features/dns"
-	"github.com/v2fly/v2ray-core/v5/features/policy"
-	"github.com/v2fly/v2ray-core/v5/transport"
-	"github.com/v2fly/v2ray-core/v5/transport/internet"
+	core "github.com/imannamdari/v2ray-core/v5"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/buf"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	dns_proto "github.com/imannamdari/v2ray-core/v5/common/protocol/dns"
+	"github.com/imannamdari/v2ray-core/v5/common/session"
+	"github.com/imannamdari/v2ray-core/v5/common/signal"
+	"github.com/imannamdari/v2ray-core/v5/common/strmatcher"
+	"github.com/imannamdari/v2ray-core/v5/common/task"
+	"github.com/imannamdari/v2ray-core/v5/features/dns"
+	"github.com/imannamdari/v2ray-core/v5/features/policy"
+	"github.com/imannamdari/v2ray-core/v5/transport"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet"
 )
 
 func init() {

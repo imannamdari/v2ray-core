@@ -6,12 +6,12 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	"github.com/v2fly/v2ray-core/v5/common/platform/filesystem"
-	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/tls"
+	"github.com/imannamdari/v2ray-core/v5/common/platform/filesystem"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/tls"
 )
 
-//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
 
 type TLSConfig struct {
 	Insecure                         bool                  `json:"allowInsecure"`

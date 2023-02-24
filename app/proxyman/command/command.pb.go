@@ -1,14 +1,15 @@
 package command
 
 import (
-	v5 "github.com/v2fly/v2ray-core/v5"
-	protocol "github.com/v2fly/v2ray-core/v5/common/protocol"
-	_ "github.com/v2fly/v2ray-core/v5/common/protoext"
+	reflect "reflect"
+	sync "sync"
+
+	v5 "github.com/imannamdari/v2ray-core/v5"
+	protocol "github.com/imannamdari/v2ray-core/v5/common/protocol"
+	_ "github.com/imannamdari/v2ray-core/v5/common/protoext"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (

@@ -6,13 +6,13 @@ import (
 
 	utls "github.com/refraction-networking/utls"
 
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/security"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/tls"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/security"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/tls"
 )
 
-//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
 
 func NewUTLSSecurityEngineFromConfig(config *Config) (security.Engine, error) {
 	if config.TlsConfig == nil {

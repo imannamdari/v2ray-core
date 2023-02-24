@@ -8,14 +8,14 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	"github.com/v2fly/v2ray-core/v5/app/router"
-	"github.com/v2fly/v2ray-core/v5/app/router/routercommon"
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/common/serial"
-	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/testassist"
-	_ "github.com/v2fly/v2ray-core/v5/infra/conf/geodata/memconservative"
-	_ "github.com/v2fly/v2ray-core/v5/infra/conf/geodata/standard"
-	router2 "github.com/v2fly/v2ray-core/v5/infra/conf/synthetic/router"
+	"github.com/imannamdari/v2ray-core/v5/app/router"
+	"github.com/imannamdari/v2ray-core/v5/app/router/routercommon"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/serial"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/testassist"
+	_ "github.com/imannamdari/v2ray-core/v5/infra/conf/geodata/memconservative"
+	_ "github.com/imannamdari/v2ray-core/v5/infra/conf/geodata/standard"
+	router2 "github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/router"
 )
 
 func TestRouterConfig(t *testing.T) {

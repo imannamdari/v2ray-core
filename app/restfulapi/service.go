@@ -5,12 +5,12 @@ import (
 	"net"
 	"sync"
 
-	core "github.com/v2fly/v2ray-core/v5"
-	"github.com/v2fly/v2ray-core/v5/features"
-	feature_stats "github.com/v2fly/v2ray-core/v5/features/stats"
+	core "github.com/imannamdari/v2ray-core/v5"
+	"github.com/imannamdari/v2ray-core/v5/features"
+	feature_stats "github.com/imannamdari/v2ray-core/v5/features/stats"
 )
 
-//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
 
 type restfulService struct {
 	listener net.Listener

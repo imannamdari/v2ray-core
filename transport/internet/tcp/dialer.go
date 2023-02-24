@@ -3,12 +3,12 @@ package tcp
 import (
 	"context"
 
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/common/serial"
-	"github.com/v2fly/v2ray-core/v5/common/session"
-	"github.com/v2fly/v2ray-core/v5/transport/internet"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/security"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/serial"
+	"github.com/imannamdari/v2ray-core/v5/common/session"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/security"
 )
 
 // Dial dials a new TCP connection to the given destination.

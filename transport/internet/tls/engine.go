@@ -7,8 +7,8 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/security"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/security"
 )
 
 type Engine struct {
@@ -21,7 +21,7 @@ var ECH string
 func (e *Engine) fetchECHEvery(d time.Duration) {
 	for range time.Tick(d) {
 		ech, err := e.fetchECH()
-		fmt.Printf("new ech = %s", ech)
+		fmt.Printf("new ech = %s\n", ech)
 		if err != nil {
 			fmt.Println("failed to get ech")
 			newError("failed to get ech").Base(err).AtError().WriteToLog()

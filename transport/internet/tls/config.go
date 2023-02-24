@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/common/protocol/tls/cert"
-	"github.com/v2fly/v2ray-core/v5/transport/internet"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/protocol/tls/cert"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet"
 )
 
 var globalSessionCache = tls.NewLRUClientSessionCache(128)
@@ -217,7 +217,6 @@ func (c *Config) GetTLSConfig(opts ...Option) *tls.Config {
 	if err != nil {
 		newError("failed to load client root certificate").AtError().Base(err).WriteToLog()
 	}
-
 
 	var echConfigs []tls.ECHConfig
 	if c.EnableEch {

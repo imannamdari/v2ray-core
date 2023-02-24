@@ -14,13 +14,13 @@ import (
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"
 
-	core "github.com/v2fly/v2ray-core/v5"
-	"github.com/v2fly/v2ray-core/v5/common"
-	"github.com/v2fly/v2ray-core/v5/common/net"
-	"github.com/v2fly/v2ray-core/v5/common/session"
-	"github.com/v2fly/v2ray-core/v5/transport/internet"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/grpc/encoding"
-	"github.com/v2fly/v2ray-core/v5/transport/internet/tls"
+	core "github.com/imannamdari/v2ray-core/v5"
+	"github.com/imannamdari/v2ray-core/v5/common"
+	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/session"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/grpc/encoding"
+	"github.com/imannamdari/v2ray-core/v5/transport/internet/tls"
 )
 
 func Dial(ctx context.Context, dest net.Destination, streamSettings *internet.MemoryStreamConfig) (internet.Connection, error) {
