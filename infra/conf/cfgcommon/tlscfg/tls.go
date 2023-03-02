@@ -129,6 +129,7 @@ func (c *TLSEchSetting) Build() (*tls.ECHSetting, error) {
 	setting := new(tls.ECHSetting)
 
 	setting.DnsAddr = c.DnsAddr
+	setting.InitEchKey = c.InitEchKey
 
 	return setting, nil
 }
