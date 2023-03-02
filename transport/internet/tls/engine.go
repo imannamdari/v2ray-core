@@ -18,7 +18,7 @@ type Engine struct {
 // ech key for ech enabled config. tls config use this for tls handshake.
 var ECH string
 
-func (e *Engine) fetchECHEvery(d time.Duration) {
+func (e *Engine) updateECHEvery(d time.Duration) {
 	for range time.Tick(d) {
 		ech, err := e.fetchECH()
 		fmt.Printf("new ech = %s\n", ech)
@@ -68,7 +68,7 @@ func (e *Engine) fetchECH() (string, error) {
 		}
 	}
 
-	return "", errors.New("failed to found ech in response")
+	return "", errors.New("failed to find ech in response")
 }
 
 func (e *Engine) Client(conn net.Conn, opts ...security.Option) (security.Conn, error) {
@@ -92,14 +92,18 @@ func NewTLSSecurityEngineFromConfig(config *Config) (security.Engine, error) {
 
 	// handle ech
 	if config.EnableEch {
-		ech, err := e.fetchECH()
-		if err != nil {
-			fmt.Println("failed to get first ech")
-			newError("failed to get first ech").Base(err).AtError().WriteToLog()
+		if config.EchSetting != nil && config.EchSetting.InitEchKey != "" {
+			ECH = config.EchSetting.InitEchKey
 		} else {
-			ECH = ech
+			ech, err := e.fetchECH()
+			if err != nil {
+				fmt.Println("failed to get first ech")
+				newError("failed to get first ech").Base(err).AtError().WriteToLog()
+			} else {
+				ECH = ech
+			}
 		}
-		go e.fetchECHEvery(15 * time.Minute)
+		go e.updateECHEvery(15 * time.Minute)
 	}
 
 	return e, nil

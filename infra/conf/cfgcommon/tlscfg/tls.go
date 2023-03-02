@@ -121,7 +121,8 @@ func readFileOrString(f string, s []string) ([]byte, error) {
 }
 
 type TLSEchSetting struct {
-	DnsAddr string `json:"dnsAddr"`
+	DnsAddr    string `json:"dnsAddr"`
+	InitEchKey string `json:"initEchKey"`
 }
 
 func (c *TLSEchSetting) Build() (*tls.ECHSetting, error) {

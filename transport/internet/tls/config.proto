@@ -68,4 +68,5 @@ message Config {
 
 message ECHSetting {
   string dns_addr = 1;
+  string init_ech_key = 2;
 }
