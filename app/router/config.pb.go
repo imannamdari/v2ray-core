@@ -1,15 +1,14 @@
 package router
 
 import (
-	reflect "reflect"
-	sync "sync"
-
-	routercommon "github.com/imannamdari/v2ray-core/v5/app/router/routercommon"
-	net "github.com/imannamdari/v2ray-core/v5/common/net"
-	_ "github.com/imannamdari/v2ray-core/v5/common/protoext"
+	routercommon "github.com/v2fly/v2ray-core/v5/app/router/routercommon"
+	net "github.com/v2fly/v2ray-core/v5/common/net"
+	_ "github.com/v2fly/v2ray-core/v5/common/protoext"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	anypb "google.golang.org/protobuf/types/known/anypb"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (

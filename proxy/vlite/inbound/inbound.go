@@ -18,17 +18,17 @@ import (
 	"github.com/xiaokangwang/VLite/transport/uni/uniserver"
 	"github.com/xiaokangwang/VLite/workers/server"
 
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/environment"
-	"github.com/imannamdari/v2ray-core/v5/common/environment/envctx"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/session"
-	"github.com/imannamdari/v2ray-core/v5/common/signal/done"
-	"github.com/imannamdari/v2ray-core/v5/features/routing"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/environment"
+	"github.com/v2fly/v2ray-core/v5/common/environment/envctx"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/session"
+	"github.com/v2fly/v2ray-core/v5/common/signal/done"
+	"github.com/v2fly/v2ray-core/v5/features/routing"
+	"github.com/v2fly/v2ray-core/v5/transport/internet"
 )
 
-//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
 
 func NewUDPInboundHandler(ctx context.Context, config *UDPProtocolConfig) (*Handler, error) {
 	proxyEnvironment := envctx.EnvironmentFromContext(ctx).(environment.ProxyEnvironment)

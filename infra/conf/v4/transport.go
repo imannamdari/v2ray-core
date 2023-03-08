@@ -1,9 +1,9 @@
 package v4
 
 import (
-	"github.com/imannamdari/v2ray-core/v5/common/serial"
-	"github.com/imannamdari/v2ray-core/v5/transport"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet"
+	"github.com/v2fly/v2ray-core/v5/common/serial"
+	"github.com/v2fly/v2ray-core/v5/transport"
+	"github.com/v2fly/v2ray-core/v5/transport/internet"
 )
 
 type TransportConfig struct {
@@ -12,6 +12,7 @@ type TransportConfig struct {
 	WSConfig   *WebSocketConfig    `json:"wsSettings"`
 	HTTPConfig *HTTPConfig         `json:"httpSettings"`
 	DSConfig   *DomainSocketConfig `json:"dsSettings"`
+	QUICConfig *QUICConfig         `json:"quicSettings"`
 	GunConfig  *GunConfig          `json:"gunSettings"`
 	GRPCConfig *GunConfig          `json:"grpcSettings"`
 }
@@ -72,6 +73,17 @@ func (c *TransportConfig) Build() (*transport.Config, error) {
 		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
 			ProtocolName: "domainsocket",
 			Settings:     serial.ToTypedMessage(ds),
+		})
+	}
+
+	if c.QUICConfig != nil {
+		qs, err := c.QUICConfig.Build()
+		if err != nil {
+			return nil, newError("Failed to build QUIC config.").Base(err)
+		}
+		config.TransportSettings = append(config.TransportSettings, &internet.TransportConfig{
+			ProtocolName: "quic",
+			Settings:     serial.ToTypedMessage(qs),
 		})
 	}
 

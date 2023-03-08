@@ -1,12 +1,12 @@
 package mux
 
 import (
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/buf"
-	"github.com/imannamdari/v2ray-core/v5/common/errors"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/protocol"
-	"github.com/imannamdari/v2ray-core/v5/common/serial"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/buf"
+	"github.com/v2fly/v2ray-core/v5/common/errors"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/protocol"
+	"github.com/v2fly/v2ray-core/v5/common/serial"
 )
 
 type Writer struct {

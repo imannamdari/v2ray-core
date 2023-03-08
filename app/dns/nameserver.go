@@ -6,15 +6,15 @@ import (
 	"strings"
 	"time"
 
-	core "github.com/imannamdari/v2ray-core/v5"
-	"github.com/imannamdari/v2ray-core/v5/app/dns/fakedns"
-	"github.com/imannamdari/v2ray-core/v5/app/router"
-	"github.com/imannamdari/v2ray-core/v5/common/errors"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/session"
-	"github.com/imannamdari/v2ray-core/v5/features"
-	"github.com/imannamdari/v2ray-core/v5/features/dns"
-	"github.com/imannamdari/v2ray-core/v5/features/routing"
+	core "github.com/v2fly/v2ray-core/v5"
+	"github.com/v2fly/v2ray-core/v5/app/dns/fakedns"
+	"github.com/v2fly/v2ray-core/v5/app/router"
+	"github.com/v2fly/v2ray-core/v5/common/errors"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/session"
+	"github.com/v2fly/v2ray-core/v5/features"
+	"github.com/v2fly/v2ray-core/v5/features/dns"
+	"github.com/v2fly/v2ray-core/v5/features/routing"
 )
 
 // Server is the interface for Name Server.
@@ -68,6 +68,8 @@ func NewServer(ctx context.Context, dest net.Destination, onCreated func(Server)
 			return core.RequireFeatures(ctx, func(dispatcher routing.Dispatcher) error { return onCreatedWithError(NewTCPNameServer(u, dispatcher)) })
 		case strings.EqualFold(u.Scheme, "tcp+local"): // DNS-over-TCP Local mode
 			return onCreatedWithError(NewTCPLocalNameServer(u))
+		case strings.EqualFold(u.Scheme, "quic+local"): // DNS-over-QUIC Local mode
+			return onCreatedWithError(NewQUICNameServer(u))
 		}
 	}
 	if dest.Network == net.Network_Unknown {

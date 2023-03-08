@@ -1,6 +1,6 @@
 package dispatcher
 
-//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
 
 import (
 	"context"
@@ -8,21 +8,21 @@ import (
 	"sync"
 	"time"
 
-	core "github.com/imannamdari/v2ray-core/v5"
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/buf"
-	"github.com/imannamdari/v2ray-core/v5/common/log"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/protocol"
-	"github.com/imannamdari/v2ray-core/v5/common/session"
-	"github.com/imannamdari/v2ray-core/v5/common/strmatcher"
-	"github.com/imannamdari/v2ray-core/v5/features/outbound"
-	"github.com/imannamdari/v2ray-core/v5/features/policy"
-	"github.com/imannamdari/v2ray-core/v5/features/routing"
-	routing_session "github.com/imannamdari/v2ray-core/v5/features/routing/session"
-	"github.com/imannamdari/v2ray-core/v5/features/stats"
-	"github.com/imannamdari/v2ray-core/v5/transport"
-	"github.com/imannamdari/v2ray-core/v5/transport/pipe"
+	core "github.com/v2fly/v2ray-core/v5"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/buf"
+	"github.com/v2fly/v2ray-core/v5/common/log"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/protocol"
+	"github.com/v2fly/v2ray-core/v5/common/session"
+	"github.com/v2fly/v2ray-core/v5/common/strmatcher"
+	"github.com/v2fly/v2ray-core/v5/features/outbound"
+	"github.com/v2fly/v2ray-core/v5/features/policy"
+	"github.com/v2fly/v2ray-core/v5/features/routing"
+	routing_session "github.com/v2fly/v2ray-core/v5/features/routing/session"
+	"github.com/v2fly/v2ray-core/v5/features/stats"
+	"github.com/v2fly/v2ray-core/v5/transport"
+	"github.com/v2fly/v2ray-core/v5/transport/pipe"
 )
 
 var errSniffingTimeout = newError("timeout on sniffing")
@@ -326,6 +326,9 @@ func (d *DefaultDispatcher) routedDispatch(ctx context.Context, link *transport.
 	if accessMessage := log.AccessMessageFromContext(ctx); accessMessage != nil {
 		if tag := handler.Tag(); tag != "" {
 			accessMessage.Detour = tag
+			if d.policy.ForSystem().OverrideAccessLogDest {
+				accessMessage.To = destination
+			}
 		}
 		log.Record(accessMessage)
 	}

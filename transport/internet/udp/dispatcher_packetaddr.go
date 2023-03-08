@@ -3,11 +3,11 @@ package udp
 import (
 	"context"
 
-	"github.com/imannamdari/v2ray-core/v5/common/buf"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/net/packetaddr"
-	"github.com/imannamdari/v2ray-core/v5/common/protocol/udp"
-	"github.com/imannamdari/v2ray-core/v5/features/routing"
+	"github.com/v2fly/v2ray-core/v5/common/buf"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/net/packetaddr"
+	"github.com/v2fly/v2ray-core/v5/common/protocol/udp"
+	"github.com/v2fly/v2ray-core/v5/features/routing"
 )
 
 type PacketAddrDispatcher struct {

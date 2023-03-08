@@ -11,15 +11,15 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 
-	core "github.com/imannamdari/v2ray-core/v5"
-	"github.com/imannamdari/v2ray-core/v5/app/dispatcher"
-	"github.com/imannamdari/v2ray-core/v5/app/proxyman"
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/serial"
-	"github.com/imannamdari/v2ray-core/v5/proxy/freedom"
-	"github.com/imannamdari/v2ray-core/v5/testing/servers/tcp"
-	"github.com/imannamdari/v2ray-core/v5/testing/servers/udp"
+	core "github.com/v2fly/v2ray-core/v5"
+	"github.com/v2fly/v2ray-core/v5/app/dispatcher"
+	"github.com/v2fly/v2ray-core/v5/app/proxyman"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/serial"
+	"github.com/v2fly/v2ray-core/v5/proxy/freedom"
+	"github.com/v2fly/v2ray-core/v5/testing/servers/tcp"
+	"github.com/v2fly/v2ray-core/v5/testing/servers/udp"
 )
 
 func xor(b []byte) []byte {

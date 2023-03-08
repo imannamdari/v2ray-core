@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/buf"
-	. "github.com/imannamdari/v2ray-core/v5/proxy/blackhole"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/buf"
+	. "github.com/v2fly/v2ray-core/v5/proxy/blackhole"
 )
 
 func TestHTTPResponse(t *testing.T) {

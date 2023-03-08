@@ -7,10 +7,10 @@ import (
 
 	"golang.org/x/net/dns/dnsmessage"
 
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/errors"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	dns_feature "github.com/imannamdari/v2ray-core/v5/features/dns"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/errors"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	dns_feature "github.com/v2fly/v2ray-core/v5/features/dns"
 )
 
 // Fqdn normalizes domain make sure it ends with '.'

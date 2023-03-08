@@ -6,17 +6,20 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	"github.com/imannamdari/v2ray-core/v5/common/serial"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/socketcfg"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/testassist"
-	v4 "github.com/imannamdari/v2ray-core/v5/infra/conf/v4"
-	"github.com/imannamdari/v2ray-core/v5/transport"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet/headers/http"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet/headers/noop"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet/kcp"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet/tcp"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet/websocket"
+	"github.com/v2fly/v2ray-core/v5/common/protocol"
+	"github.com/v2fly/v2ray-core/v5/common/serial"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/socketcfg"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/testassist"
+	v4 "github.com/v2fly/v2ray-core/v5/infra/conf/v4"
+	"github.com/v2fly/v2ray-core/v5/transport"
+	"github.com/v2fly/v2ray-core/v5/transport/internet"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/headers/http"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/headers/noop"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/headers/tls"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/kcp"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/quic"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/tcp"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/websocket"
 )
 
 func TestSocketConfig(t *testing.T) {
@@ -88,6 +91,12 @@ func TestTransportConfig(t *testing.T) {
 				},
 				"wsSettings": {
 					"path": "/t"
+				},
+				"quicSettings": {
+					"key": "abcd",
+					"header": {
+						"type": "dtls"
+					}
 				}
 			}`,
 			Parser: createParser(),
@@ -146,6 +155,16 @@ func TestTransportConfig(t *testing.T) {
 						ProtocolName: "websocket",
 						Settings: serial.ToTypedMessage(&websocket.Config{
 							Path: "/t",
+						}),
+					},
+					{
+						ProtocolName: "quic",
+						Settings: serial.ToTypedMessage(&quic.Config{
+							Key: "abcd",
+							Security: &protocol.SecurityConfig{
+								Type: protocol.SecurityType_NONE,
+							},
+							Header: serial.ToTypedMessage(&tls.PacketConfig{}),
 						}),
 					},
 				},

@@ -6,20 +6,20 @@ import (
 
 	"google.golang.org/protobuf/types/known/anypb"
 
-	core "github.com/imannamdari/v2ray-core/v5"
-	"github.com/imannamdari/v2ray-core/v5/app/dispatcher"
-	"github.com/imannamdari/v2ray-core/v5/app/proxyman"
-	"github.com/imannamdari/v2ray-core/v5/app/stats"
-	"github.com/imannamdari/v2ray-core/v5/common/serial"
-	"github.com/imannamdari/v2ray-core/v5/features"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/loader"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/muxcfg"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/proxycfg"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon/sniffer"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/dns"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/log"
-	"github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/router"
+	core "github.com/v2fly/v2ray-core/v5"
+	"github.com/v2fly/v2ray-core/v5/app/dispatcher"
+	"github.com/v2fly/v2ray-core/v5/app/proxyman"
+	"github.com/v2fly/v2ray-core/v5/app/stats"
+	"github.com/v2fly/v2ray-core/v5/common/serial"
+	"github.com/v2fly/v2ray-core/v5/features"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/loader"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/muxcfg"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/proxycfg"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/cfgcommon/sniffer"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/synthetic/dns"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/synthetic/log"
+	"github.com/v2fly/v2ray-core/v5/infra/conf/synthetic/router"
 )
 
 var (
@@ -203,13 +203,14 @@ func (c *InboundDetourConfig) Build() (*core.InboundHandlerConfig, error) {
 }
 
 type OutboundDetourConfig struct {
-	Protocol      string                `json:"protocol"`
-	SendThrough   *cfgcommon.Address    `json:"sendThrough"`
-	Tag           string                `json:"tag"`
-	Settings      *json.RawMessage      `json:"settings"`
-	StreamSetting *StreamConfig         `json:"streamSettings"`
-	ProxySettings *proxycfg.ProxyConfig `json:"proxySettings"`
-	MuxSettings   *muxcfg.MuxConfig     `json:"mux"`
+	Protocol       string                `json:"protocol"`
+	SendThrough    *cfgcommon.Address    `json:"sendThrough"`
+	Tag            string                `json:"tag"`
+	Settings       *json.RawMessage      `json:"settings"`
+	StreamSetting  *StreamConfig         `json:"streamSettings"`
+	ProxySettings  *proxycfg.ProxyConfig `json:"proxySettings"`
+	MuxSettings    *muxcfg.MuxConfig     `json:"mux"`
+	DomainStrategy string                `json:"domainStrategy"`
 }
 
 // Build implements Buildable.
@@ -242,6 +243,16 @@ func (c *OutboundDetourConfig) Build() (*core.OutboundHandlerConfig, error) {
 
 	if c.MuxSettings != nil {
 		senderSettings.MultiplexSettings = c.MuxSettings.Build()
+	}
+
+	senderSettings.DomainStrategy = proxyman.SenderConfig_AS_IS
+	switch strings.ToLower(c.DomainStrategy) {
+	case "useip", "use_ip", "use-ip":
+		senderSettings.DomainStrategy = proxyman.SenderConfig_USE_IP
+	case "useip4", "useipv4", "use_ip4", "use_ipv4", "use_ip_v4", "use-ip4", "use-ipv4", "use-ip-v4":
+		senderSettings.DomainStrategy = proxyman.SenderConfig_USE_IP4
+	case "useip6", "useipv6", "use_ip6", "use_ipv6", "use_ip_v6", "use-ip6", "use-ipv6", "use-ip-v6":
+		senderSettings.DomainStrategy = proxyman.SenderConfig_USE_IP6
 	}
 
 	settings := []byte("{}")

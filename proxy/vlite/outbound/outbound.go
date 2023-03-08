@@ -18,20 +18,20 @@ import (
 	"github.com/xiaokangwang/VLite/transport/uni/uniclient"
 	client2 "github.com/xiaokangwang/VLite/workers/client"
 
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/environment"
-	"github.com/imannamdari/v2ray-core/v5/common/environment/envctx"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/net/packetaddr"
-	"github.com/imannamdari/v2ray-core/v5/common/session"
-	"github.com/imannamdari/v2ray-core/v5/common/signal"
-	"github.com/imannamdari/v2ray-core/v5/common/task"
-	"github.com/imannamdari/v2ray-core/v5/transport"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet"
-	"github.com/imannamdari/v2ray-core/v5/transport/internet/udp"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/environment"
+	"github.com/v2fly/v2ray-core/v5/common/environment/envctx"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/net/packetaddr"
+	"github.com/v2fly/v2ray-core/v5/common/session"
+	"github.com/v2fly/v2ray-core/v5/common/signal"
+	"github.com/v2fly/v2ray-core/v5/common/task"
+	"github.com/v2fly/v2ray-core/v5/transport"
+	"github.com/v2fly/v2ray-core/v5/transport/internet"
+	"github.com/v2fly/v2ray-core/v5/transport/internet/udp"
 )
 
-//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
 
 func NewUDPOutboundHandler(ctx context.Context, config *UDPProtocolConfig) (*Handler, error) {
 	proxyEnvironment := envctx.EnvironmentFromContext(ctx).(environment.ProxyEnvironment)

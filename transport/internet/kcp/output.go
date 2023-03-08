@@ -4,8 +4,8 @@ import (
 	"io"
 	"sync"
 
-	"github.com/imannamdari/v2ray-core/v5/common/buf"
-	"github.com/imannamdari/v2ray-core/v5/common/retry"
+	"github.com/v2fly/v2ray-core/v5/common/buf"
+	"github.com/v2fly/v2ray-core/v5/common/retry"
 )
 
 type SegmentWriter interface {

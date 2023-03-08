@@ -10,8 +10,8 @@ import (
 	"github.com/v2fly/VSign/insmgr"
 	"github.com/v2fly/VSign/signerVerify"
 
-	"github.com/imannamdari/v2ray-core/v5/common/platform"
-	"github.com/imannamdari/v2ray-core/v5/common/platform/filesystem"
+	"github.com/v2fly/v2ray-core/v5/common/platform"
+	"github.com/v2fly/v2ray-core/v5/common/platform/filesystem"
 )
 
 type EmbeddedHashProtectedLoader struct {

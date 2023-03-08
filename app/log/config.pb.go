@@ -1,13 +1,12 @@
 package log
 
 import (
-	reflect "reflect"
-	sync "sync"
-
-	log "github.com/imannamdari/v2ray-core/v5/common/log"
-	_ "github.com/imannamdari/v2ray-core/v5/common/protoext"
+	log "github.com/v2fly/v2ray-core/v5/common/log"
+	_ "github.com/v2fly/v2ray-core/v5/common/protoext"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (

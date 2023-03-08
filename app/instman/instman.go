@@ -3,12 +3,12 @@ package instman
 import (
 	"context"
 
-	core "github.com/imannamdari/v2ray-core/v5"
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/features/extension"
+	core "github.com/v2fly/v2ray-core/v5"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/features/extension"
 )
 
-//go:generate go run github.com/imannamdari/v2ray-core/v5/common/errors/errorgen
+//go:generate go run github.com/v2fly/v2ray-core/v5/common/errors/errorgen
 
 type InstanceMgr struct {
 	config    *Config // nolint: structcheck

@@ -1,13 +1,12 @@
 package utls
 
 import (
-	reflect "reflect"
-	sync "sync"
-
-	_ "github.com/imannamdari/v2ray-core/v5/common/protoext"
-	tls "github.com/imannamdari/v2ray-core/v5/transport/internet/tls"
+	_ "github.com/v2fly/v2ray-core/v5/common/protoext"
+	tls "github.com/v2fly/v2ray-core/v5/transport/internet/tls"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (

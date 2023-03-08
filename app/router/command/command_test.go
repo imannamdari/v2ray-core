@@ -11,14 +11,14 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 
-	"github.com/imannamdari/v2ray-core/v5/app/router"
-	. "github.com/imannamdari/v2ray-core/v5/app/router/command"
-	"github.com/imannamdari/v2ray-core/v5/app/router/routercommon"
-	"github.com/imannamdari/v2ray-core/v5/app/stats"
-	"github.com/imannamdari/v2ray-core/v5/common"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/features/routing"
-	"github.com/imannamdari/v2ray-core/v5/testing/mocks"
+	"github.com/v2fly/v2ray-core/v5/app/router"
+	. "github.com/v2fly/v2ray-core/v5/app/router/command"
+	"github.com/v2fly/v2ray-core/v5/app/router/routercommon"
+	"github.com/v2fly/v2ray-core/v5/app/stats"
+	"github.com/v2fly/v2ray-core/v5/common"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/features/routing"
+	"github.com/v2fly/v2ray-core/v5/testing/mocks"
 )
 
 func TestServiceSubscribeRoutingStats(t *testing.T) {

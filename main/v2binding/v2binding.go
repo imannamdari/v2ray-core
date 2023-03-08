@@ -3,18 +3,18 @@ package v2binding
 import (
 	"google.golang.org/protobuf/types/known/anypb"
 
-	core "github.com/imannamdari/v2ray-core/v5"
-	"github.com/imannamdari/v2ray-core/v5/app/commander"
-	"github.com/imannamdari/v2ray-core/v5/app/dispatcher"
-	"github.com/imannamdari/v2ray-core/v5/app/instman"
-	"github.com/imannamdari/v2ray-core/v5/app/instman/command"
-	"github.com/imannamdari/v2ray-core/v5/app/proxyman"
-	"github.com/imannamdari/v2ray-core/v5/app/router"
-	"github.com/imannamdari/v2ray-core/v5/common/net"
-	"github.com/imannamdari/v2ray-core/v5/common/serial"
-	_ "github.com/imannamdari/v2ray-core/v5/main/distro/all"
-	"github.com/imannamdari/v2ray-core/v5/proxy/blackhole"
-	"github.com/imannamdari/v2ray-core/v5/proxy/dokodemo"
+	core "github.com/v2fly/v2ray-core/v5"
+	"github.com/v2fly/v2ray-core/v5/app/commander"
+	"github.com/v2fly/v2ray-core/v5/app/dispatcher"
+	"github.com/v2fly/v2ray-core/v5/app/instman"
+	"github.com/v2fly/v2ray-core/v5/app/instman/command"
+	"github.com/v2fly/v2ray-core/v5/app/proxyman"
+	"github.com/v2fly/v2ray-core/v5/app/router"
+	"github.com/v2fly/v2ray-core/v5/common/net"
+	"github.com/v2fly/v2ray-core/v5/common/serial"
+	_ "github.com/v2fly/v2ray-core/v5/main/distro/all"
+	"github.com/v2fly/v2ray-core/v5/proxy/blackhole"
+	"github.com/v2fly/v2ray-core/v5/proxy/dokodemo"
 )
 
 type bindingInstance struct {
