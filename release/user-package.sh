@@ -18,7 +18,7 @@ cleanup() { rm -rf "$TMP"; }
 trap cleanup INT TERM ERR
 
 get_source() {
-	echo ">>> Clone imannamdari/v2ray-core repo..."
+	echo ">>> Clone v2fly/v2ray-core repo..."
 	git clone https://github.com/imannamdari/v2ray-core.git
 	cd v2ray-core
 	go mod download

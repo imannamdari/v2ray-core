@@ -58,6 +58,7 @@ import (
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/grpc"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/http"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/kcp"
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/quic"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/tcp"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/tls"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/tls/utls"
