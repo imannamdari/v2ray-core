@@ -9,12 +9,21 @@ import (
 	"github.com/imannamdari/v2ray-core/v5/transport/internet/tagged"
 )
 
-func NewRootEnvImpl(ctx context.Context, transientStorage storage.ScopedTransientStorage) RootEnvironment {
-	return &rootEnvImpl{transientStorage: transientStorage, ctx: ctx}
+func NewRootEnvImpl(ctx context.Context, transientStorage storage.ScopedTransientStorage,
+	systemDialer internet.SystemDialer, systemListener internet.SystemListener,
+) RootEnvironment {
+	return &rootEnvImpl{
+		transientStorage: transientStorage,
+		systemListener:   systemListener,
+		systemDialer:     systemDialer,
+		ctx:              ctx,
+	}
 }
 
 type rootEnvImpl struct {
 	transientStorage storage.ScopedTransientStorage
+	systemDialer     internet.SystemDialer
+	systemListener   internet.SystemListener
 
 	ctx context.Context
 }
@@ -30,6 +39,8 @@ func (r *rootEnvImpl) AppEnvironment(tag string) AppEnvironment {
 	}
 	return &appEnvImpl{
 		transientStorage: transientStorage,
+		systemListener:   r.systemListener,
+		systemDialer:     r.systemDialer,
 		ctx:              r.ctx,
 	}
 }
@@ -41,12 +52,24 @@ func (r *rootEnvImpl) ProxyEnvironment(tag string) ProxyEnvironment {
 	}
 	return &proxyEnvImpl{
 		transientStorage: transientStorage,
+		systemListener:   r.systemListener,
+		systemDialer:     r.systemDialer,
 		ctx:              r.ctx,
 	}
 }
 
+func (r *rootEnvImpl) DropProxyEnvironment(tag string) error {
+	transientStorage, err := r.transientStorage.NarrowScope(r.ctx, tag)
+	if err != nil {
+		return err
+	}
+	return transientStorage.DropScope(r.ctx, tag)
+}
+
 type appEnvImpl struct {
 	transientStorage storage.ScopedTransientStorage
+	systemDialer     internet.SystemDialer
+	systemListener   internet.SystemListener
 
 	ctx context.Context
 }
@@ -68,7 +91,7 @@ func (a *appEnvImpl) Listener() internet.SystemListener {
 }
 
 func (a *appEnvImpl) OutboundDialer() tagged.DialFunc {
-	panic("implement me")
+	return internet.DialTaggedOutbound
 }
 
 func (a *appEnvImpl) OpenFileForReadSeek() fsifce.FileSeekerFunc {
@@ -98,6 +121,8 @@ func (a *appEnvImpl) NarrowScope(key string) (AppEnvironment, error) {
 	}
 	return &appEnvImpl{
 		transientStorage: transientStorage,
+		systemDialer:     a.systemDialer,
+		systemListener:   a.systemListener,
 		ctx:              a.ctx,
 	}, nil
 }
@@ -108,6 +133,8 @@ func (a *appEnvImpl) doNotImpl() {
 
 type proxyEnvImpl struct {
 	transientStorage storage.ScopedTransientStorage
+	systemDialer     internet.SystemDialer
+	systemListener   internet.SystemListener
 
 	ctx context.Context
 }
@@ -147,6 +174,8 @@ func (p *proxyEnvImpl) NarrowScopeToTransport(key string) (TransportEnvironment,
 	return &transportEnvImpl{
 		ctx:              p.ctx,
 		transientStorage: transientStorage,
+		systemDialer:     p.systemDialer,
+		systemListener:   p.systemListener,
 	}, nil
 }
 
@@ -156,6 +185,8 @@ func (p *proxyEnvImpl) doNotImpl() {
 
 type transportEnvImpl struct {
 	transientStorage storage.ScopedTransientStorage
+	systemDialer     internet.SystemDialer
+	systemListener   internet.SystemListener
 
 	ctx context.Context
 }
@@ -169,11 +200,11 @@ func (t *transportEnvImpl) RecordLog() interface{} {
 }
 
 func (t *transportEnvImpl) Dialer() internet.SystemDialer {
-	panic("implement me")
+	return t.systemDialer
 }
 
 func (t *transportEnvImpl) Listener() internet.SystemListener {
-	panic("implement me")
+	return t.systemListener
 }
 
 func (t *transportEnvImpl) OutboundDialer() tagged.DialFunc {

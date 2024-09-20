@@ -8,6 +8,8 @@ import (
 	"github.com/imannamdari/v2ray-core/v5/common"
 	"github.com/imannamdari/v2ray-core/v5/common/buf"
 	"github.com/imannamdari/v2ray-core/v5/common/dice"
+	"github.com/imannamdari/v2ray-core/v5/common/environment"
+	"github.com/imannamdari/v2ray-core/v5/common/environment/envctx"
 	"github.com/imannamdari/v2ray-core/v5/common/net"
 	"github.com/imannamdari/v2ray-core/v5/transport/internet"
 	"github.com/imannamdari/v2ray-core/v5/transport/internet/tls"
@@ -47,7 +49,10 @@ func DialKCP(ctx context.Context, dest net.Destination, streamSettings *internet
 	dest.Network = net.Network_UDP
 	newError("dialing mKCP to ", dest).WriteToLog()
 
-	rawConn, err := internet.DialSystem(ctx, dest, streamSettings.SocketSettings)
+	transportEnvironment := envctx.EnvironmentFromContext(ctx).(environment.TransportEnvironment)
+	dialer := transportEnvironment.Dialer()
+
+	rawConn, err := dialer.Dial(ctx, nil, dest, streamSettings.SocketSettings)
 	if err != nil {
 		return nil, newError("failed to dial to dest: ", err).AtWarning().Base(err)
 	}

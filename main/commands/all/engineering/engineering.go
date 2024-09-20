@@ -9,6 +9,10 @@ var cmdEngineering = &base.Command{
 	Commands: []*base.Command{
 		cmdConvertPb,
 		cmdReversePb,
+		cmdNonNativeLinkExtract,
+		cmdNonNativeLinkExec,
+		cmdSubscriptionEntriesExtract,
+		cmdEncodeDataURL,
 	},
 }
 

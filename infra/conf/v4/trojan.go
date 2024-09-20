@@ -2,13 +2,16 @@ package v4
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/golang/protobuf/proto"
 
 	"github.com/imannamdari/v2ray-core/v5/common/net"
+	"github.com/imannamdari/v2ray-core/v5/common/net/packetaddr"
 	"github.com/imannamdari/v2ray-core/v5/common/protocol"
 	"github.com/imannamdari/v2ray-core/v5/common/serial"
 	"github.com/imannamdari/v2ray-core/v5/infra/conf/cfgcommon"
@@ -89,9 +92,10 @@ type TrojanUserConfig struct {
 
 // TrojanServerConfig is Inbound configuration
 type TrojanServerConfig struct {
-	Clients   []*TrojanUserConfig      `json:"clients"`
-	Fallback  json.RawMessage          `json:"fallback"`
-	Fallbacks []*TrojanInboundFallback `json:"fallbacks"`
+	Clients        []*TrojanUserConfig      `json:"clients"`
+	Fallback       json.RawMessage          `json:"fallback"`
+	Fallbacks      []*TrojanInboundFallback `json:"fallbacks"`
+	PacketEncoding string                   `json:"packetEncoding"`
 }
 
 // Build implements Buildable
@@ -139,24 +143,21 @@ func (c *TrojanServerConfig) Build() (proto.Message, error) {
 			return nil, newError(`Trojan fallbacks: "path" must be empty or start with "/"`)
 		}
 		if fb.Type == "" && fb.Dest != "" {
-			if fb.Dest == "serve-ws-none" {
+			if fb.Dest == "serve-ws-none" { // nolint:gocritic
 				fb.Type = "serve"
+			} else if filepath.IsAbs(fb.Dest) || fb.Dest[0] == '@' {
+				fb.Type = "unix"
+				if strings.HasPrefix(fb.Dest, "@@") && (runtime.GOOS == "linux" || runtime.GOOS == "android") {
+					fullAddr := make([]byte, len(syscall.RawSockaddrUnix{}.Path)) // may need padding to work with haproxy
+					copy(fullAddr, fb.Dest[1:])
+					fb.Dest = string(fullAddr)
+				}
 			} else {
-				switch fb.Dest[0] {
-				case '@', '/':
-					fb.Type = "unix"
-					if fb.Dest[0] == '@' && len(fb.Dest) > 1 && fb.Dest[1] == '@' && (runtime.GOOS == "linux" || runtime.GOOS == "android") {
-						fullAddr := make([]byte, len(syscall.RawSockaddrUnix{}.Path)) // may need padding to work with haproxy
-						copy(fullAddr, fb.Dest[1:])
-						fb.Dest = string(fullAddr)
-					}
-				default:
-					if _, err := strconv.Atoi(fb.Dest); err == nil {
-						fb.Dest = "127.0.0.1:" + fb.Dest
-					}
-					if _, _, err := net.SplitHostPort(fb.Dest); err == nil {
-						fb.Type = "tcp"
-					}
+				if _, err := strconv.Atoi(fb.Dest); err == nil {
+					fb.Dest = "127.0.0.1:" + fb.Dest
+				}
+				if _, _, err := net.SplitHostPort(fb.Dest); err == nil {
+					fb.Type = "tcp"
 				}
 			}
 		}
@@ -166,6 +167,13 @@ func (c *TrojanServerConfig) Build() (proto.Message, error) {
 		if fb.Xver > 2 {
 			return nil, newError(`Trojan fallbacks: invalid PROXY protocol version, "xver" only accepts 0, 1, 2`)
 		}
+	}
+
+	switch c.PacketEncoding {
+	case "Packet":
+		config.PacketEncoding = packetaddr.PacketAddrType_Packet
+	case "", "None":
+		config.PacketEncoding = packetaddr.PacketAddrType_None
 	}
 
 	return config, nil

@@ -6,12 +6,10 @@ import (
 	"encoding/binary"
 	"net/url"
 	"sync"
-	"sync/atomic"
 	"time"
 
-	"github.com/imannamdari/quic-go"
+	"github.com/quic-go/quic-go"
 	"golang.org/x/net/dns/dnsmessage"
-	"golang.org/x/net/http2"
 
 	"github.com/imannamdari/v2ray-core/v5/common"
 	"github.com/imannamdari/v2ray-core/v5/common/buf"
@@ -25,7 +23,7 @@ import (
 )
 
 // NextProtoDQ - During connection establishment, DNS/QUIC support is indicated
-// by selecting the ALPN token "dq" in the crypto handshake.
+// by selecting the ALPN token "doq" in the crypto handshake.
 const NextProtoDQ = "doq"
 
 const handshakeIdleTimeout = time.Second * 8
@@ -36,7 +34,6 @@ type QUICNameServer struct {
 	ips         map[string]record
 	pub         *pubsub.Service
 	cleanup     *task.Periodic
-	reqID       uint32
 	name        string
 	destination net.Destination
 	connection  quic.Connection
@@ -150,7 +147,7 @@ func (s *QUICNameServer) updateIP(req *dnsRequest, ipRec *IPRecord) {
 }
 
 func (s *QUICNameServer) newReqID() uint16 {
-	return uint16(atomic.AddUint32(&s.reqID, 1))
+	return 0
 }
 
 func (s *QUICNameServer) sendQuery(ctx context.Context, domain string, clientIP net.IP, option dns_feature.IPOption) {
@@ -378,12 +375,23 @@ func (s *QUICNameServer) getConnection(ctx context.Context) (quic.Connection, er
 }
 
 func (s *QUICNameServer) openConnection(ctx context.Context) (quic.Connection, error) {
-	tlsConfig := tls.Config{}
+	tlsConfig := tls.Config{
+		ServerName: func() string {
+			switch s.destination.Address.Family() {
+			case net.AddressFamilyIPv4, net.AddressFamilyIPv6:
+				return s.destination.Address.IP().String()
+			case net.AddressFamilyDomain:
+				return s.destination.Address.Domain()
+			default:
+				panic("unknown address family")
+			}
+		}(),
+	}
 	quicConfig := &quic.Config{
 		HandshakeIdleTimeout: handshakeIdleTimeout,
 	}
 
-	conn, err := quic.DialAddrContext(ctx, s.destination.NetAddr(), tlsConfig.GetTLSConfig(tls.WithNextProto("http/1.1", http2.NextProtoTLS, NextProtoDQ)), quicConfig)
+	conn, err := quic.DialAddr(ctx, s.destination.NetAddr(), tlsConfig.GetTLSConfig(tls.WithNextProto(NextProtoDQ)), quicConfig)
 	if err != nil {
 		return nil, err
 	}

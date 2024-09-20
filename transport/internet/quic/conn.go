@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/imannamdari/quic-go"
+	"github.com/quic-go/quic-go"
 
 	"github.com/imannamdari/v2ray-core/v5/common"
 	"github.com/imannamdari/v2ray-core/v5/common/buf"

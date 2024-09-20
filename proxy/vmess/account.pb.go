@@ -1,12 +1,11 @@
 package vmess
 
 import (
-	reflect "reflect"
-	sync "sync"
-
 	protocol "github.com/imannamdari/v2ray-core/v5/common/protocol"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (

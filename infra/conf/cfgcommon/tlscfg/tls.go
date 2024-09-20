@@ -2,7 +2,9 @@ package tlscfg
 
 import (
 	"encoding/base64"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 
@@ -65,7 +67,33 @@ func (c *TLSConfig) Build() (proto.Message, error) {
 		config.EchSetting, _ = c.EchSetting.Build()
 	}
 
+	// handle ech
+	if config.EnableEch {
+		ech, err := config.FetchECH()
+		if err != nil {
+			fmt.Println("failed to get first ech")
+		} else {
+			tls.ECH = ech
+		}
+		fmt.Printf("new ech = %s\n", ech)
+		go config.UpdateECHEvery(15 * time.Minute)
+	}
+
 	return config, nil
+}
+
+type TLSEchSetting struct {
+	DnsAddr    string `json:"dnsAddr"`
+	InitEchKey string `json:"initEchKey"`
+}
+
+func (c *TLSEchSetting) Build() (*tls.ECHSetting, error) {
+	setting := new(tls.ECHSetting)
+
+	setting.DnsAddr = c.DnsAddr
+	setting.InitEchKey = c.InitEchKey
+
+	return setting, nil
 }
 
 type TLSCertConfig struct {
@@ -118,18 +146,4 @@ func readFileOrString(f string, s []string) ([]byte, error) {
 		return []byte(strings.Join(s, "\n")), nil
 	}
 	return nil, newError("both file and bytes are empty.")
-}
-
-type TLSEchSetting struct {
-	DnsAddr    string `json:"dnsAddr"`
-	InitEchKey string `json:"initEchKey"`
-}
-
-func (c *TLSEchSetting) Build() (*tls.ECHSetting, error) {
-	setting := new(tls.ECHSetting)
-
-	setting.DnsAddr = c.DnsAddr
-	setting.InitEchKey = c.InitEchKey
-
-	return setting, nil
 }

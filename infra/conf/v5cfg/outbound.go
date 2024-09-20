@@ -42,6 +42,19 @@ func (c OutboundConfig) BuildV5(ctx context.Context) (proto.Message, error) {
 		senderSettings.MultiplexSettings = c.MuxSettings.Build()
 	}
 
+	senderSettings.DomainStrategy = proxyman.SenderConfig_AS_IS
+	switch c.DomainStrategy {
+	case "UseIP":
+		senderSettings.DomainStrategy = proxyman.SenderConfig_USE_IP
+	case "UseIP4":
+		senderSettings.DomainStrategy = proxyman.SenderConfig_USE_IP4
+	case "UseIP6":
+		senderSettings.DomainStrategy = proxyman.SenderConfig_USE_IP6
+	case "AsIs", "":
+	default:
+		return nil, newError("unknown domain strategy: ", c.DomainStrategy)
+	}
+
 	if c.Settings == nil {
 		c.Settings = []byte("{}")
 	}

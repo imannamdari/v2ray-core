@@ -7,6 +7,8 @@ import (
 	"github.com/imannamdari/v2ray-core/v5/app/proxyman"
 	"github.com/imannamdari/v2ray-core/v5/common"
 	"github.com/imannamdari/v2ray-core/v5/common/dice"
+	"github.com/imannamdari/v2ray-core/v5/common/environment"
+	"github.com/imannamdari/v2ray-core/v5/common/environment/envctx"
 	"github.com/imannamdari/v2ray-core/v5/common/mux"
 	"github.com/imannamdari/v2ray-core/v5/common/net"
 	"github.com/imannamdari/v2ray-core/v5/common/net/packetaddr"
@@ -50,6 +52,7 @@ func getStatCounter(v *core.Instance, tag string) (stats.Counter, stats.Counter)
 
 // Handler is an implements of outbound.Handler.
 type Handler struct {
+	ctx             context.Context
 	tag             string
 	senderSettings  *proxyman.SenderConfig
 	streamSettings  *internet.MemoryStreamConfig
@@ -66,6 +69,7 @@ func NewHandler(ctx context.Context, config *core.OutboundHandlerConfig) (outbou
 	v := core.MustFromContext(ctx)
 	uplinkCounter, downlinkCounter := getStatCounter(v, config.Tag)
 	h := &Handler{
+		ctx:             ctx,
 		tag:             config.Tag,
 		outboundManager: v.GetFeature(outbound.ManagerType()).(outbound.Manager),
 		uplinkCounter:   uplinkCounter,
@@ -147,6 +151,18 @@ func (h *Handler) Tag() string {
 
 // Dispatch implements proxy.Outbound.Dispatch.
 func (h *Handler) Dispatch(ctx context.Context, link *transport.Link) {
+	if h.senderSettings != nil && h.senderSettings.DomainStrategy != proxyman.SenderConfig_AS_IS {
+		outbound := session.OutboundFromContext(ctx)
+		if outbound == nil {
+			outbound = new(session.Outbound)
+			ctx = session.ContextWithOutbound(ctx, outbound)
+		}
+		if outbound.Target.Address != nil && outbound.Target.Address.Family().IsDomain() {
+			if addr := h.resolveIP(ctx, outbound.Target.Address.Domain(), h.Address()); addr != nil {
+				outbound.Target.Address = addr
+			}
+		}
+	}
 	if h.mux != nil && (h.mux.Enabled || session.MuxPreferedFromContext(ctx)) {
 		if err := h.mux.Dispatch(ctx, link); err != nil {
 			err := newError("failed to process mux outbound traffic").Base(err)
@@ -251,6 +267,12 @@ func (h *Handler) Dial(ctx context.Context, dest net.Destination) (internet.Conn
 		return h.getStatCouterConnection(conn), nil
 	}
 
+	proxyEnvironment := envctx.EnvironmentFromContext(h.ctx).(environment.ProxyEnvironment)
+	transportEnvironment, err := proxyEnvironment.NarrowScopeToTransport("transport")
+	if err != nil {
+		return nil, newError("unable to narrow environment to transport").Base(err)
+	}
+	ctx = envctx.ContextWithEnvironment(ctx, transportEnvironment)
 	conn, err := internet.Dial(ctx, dest, h.streamSettings)
 	return h.getStatCouterConnection(conn), err
 }
@@ -295,5 +317,11 @@ func (h *Handler) Start() error {
 // Close implements common.Closable.
 func (h *Handler) Close() error {
 	common.Close(h.mux)
+
+	if closableProxy, ok := h.proxy.(common.Closable); ok {
+		if err := closableProxy.Close(); err != nil {
+			return newError("unable to close proxy").Base(err)
+		}
+	}
 	return nil
 }
