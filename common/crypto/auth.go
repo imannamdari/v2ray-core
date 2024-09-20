@@ -91,6 +91,7 @@ type AuthenticationReader struct {
 	transferType protocol.TransferType
 	padding      PaddingLengthGenerator
 	size         uint16
+	sizeOffset   uint16
 	paddingLen   uint16
 	hasSize      bool
 	done         bool
@@ -103,6 +104,9 @@ func NewAuthenticationReader(auth Authenticator, sizeParser ChunkSizeDecoder, re
 		transferType: transferType,
 		padding:      paddingLen,
 		sizeBytes:    make([]byte, sizeParser.SizeBytes()),
+	}
+	if chunkSizeDecoderWithOffset, ok := sizeParser.(ChunkSizeDecoderWithOffset); ok {
+		r.sizeOffset = chunkSizeDecoderWithOffset.HasConstantOffset()
 	}
 	if breader, ok := reader.(*buf.BufferedReader); ok {
 		r.reader = breader
@@ -160,37 +164,39 @@ func (r *AuthenticationReader) readInternal(soft bool, mb *buf.MultiBuffer) erro
 		return err
 	}
 
-	if size == uint16(r.auth.Overhead())+padding {
+	if size+r.sizeOffset == uint16(r.auth.Overhead())+padding {
 		r.done = true
 		return io.EOF
 	}
 
-	if soft && int32(size) > r.reader.BufferedBytes() {
+	effectiveSize := int32(size) + int32(r.sizeOffset)
+
+	if soft && effectiveSize > r.reader.BufferedBytes() {
 		r.size = size
 		r.paddingLen = padding
 		r.hasSize = true
 		return errSoft
 	}
 
-	if size <= buf.Size {
-		b, err := r.readBuffer(int32(size), int32(padding))
+	if effectiveSize <= buf.Size {
+		b, err := r.readBuffer(effectiveSize, int32(padding))
 		if err != nil {
-			return nil
+			return err
 		}
 		*mb = append(*mb, b)
 		return nil
 	}
 
-	payload := bytespool.Alloc(int32(size))
+	payload := bytespool.Alloc(effectiveSize)
 	defer bytespool.Free(payload)
 
-	if _, err := io.ReadFull(r.reader, payload[:size]); err != nil {
+	if _, err := io.ReadFull(r.reader, payload[:effectiveSize]); err != nil {
 		return err
 	}
 
-	size -= padding
+	effectiveSize -= int32(padding)
 
-	rb, err := r.auth.Open(payload[:0], payload[:size])
+	rb, err := r.auth.Open(payload[:0], payload[:effectiveSize])
 	if err != nil {
 		return err
 	}

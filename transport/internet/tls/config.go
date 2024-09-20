@@ -6,10 +6,14 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/miekg/dns"
 
 	"github.com/imannamdari/v2ray-core/v5/common/net"
 	"github.com/imannamdari/v2ray-core/v5/common/protocol/tls/cert"
@@ -19,6 +23,61 @@ import (
 var globalSessionCache = tls.NewLRUClientSessionCache(128)
 
 const exp8357 = "experiment:8357"
+
+// ech key for ech enabled config. tls config use this for tls handshake.
+var ECH string
+
+func (c *Config) UpdateECHEvery(d time.Duration) {
+	for range time.Tick(d) {
+		ech, err := c.FetchECH()
+		fmt.Printf("new ech = %s\n", ech)
+		if err != nil {
+			fmt.Println("failed to get ech")
+		} else {
+			ECH = ech
+		}
+	}
+}
+
+// only support cloudflare ech
+func (c *Config) FetchECH() (string, error) {
+	dc := dns.Client{Timeout: 10 * time.Second}
+
+	d := dns.Fqdn("cloudflare-ech.com")
+	q := dns.Question{
+		Name:   d,
+		Qtype:  dns.TypeHTTPS,
+		Qclass: dns.ClassINET,
+	}
+
+	dnsAddr := "127.0.0.1:53"
+	if c.EchSetting != nil && c.EchSetting.DnsAddr != "" {
+		dnsAddr = c.EchSetting.DnsAddr
+	}
+
+	r, _, err := dc.Exchange(&dns.Msg{
+		MsgHdr: dns.MsgHdr{
+			Id:               dns.Id(),
+			RecursionDesired: true,
+		},
+		Question: []dns.Question{q},
+	}, dnsAddr)
+	if err != nil {
+		return "", err
+	}
+
+	for _, v := range r.Answer {
+		if vv, ok := v.(*dns.HTTPS); ok {
+			for _, vvv := range vv.SVCB.Value {
+				if vvv.Key().String() == "ech" {
+					return vvv.String(), nil
+				}
+			}
+		}
+	}
+
+	return "", errors.New("failed to find ech in response")
+}
 
 // ParseCertificate converts a cert.Certificate to Certificate.
 func ParseCertificate(c *cert.Certificate) *Certificate {
@@ -196,6 +255,16 @@ func (c *Config) verifyPeerCert(rawCerts [][]byte, verifiedChains [][]*x509.Cert
 	return nil
 }
 
+type alwaysFlushWriter struct {
+	file *os.File
+}
+
+func (a *alwaysFlushWriter) Write(p []byte) (n int, err error) {
+	n, err = a.file.Write(p)
+	a.file.Sync()
+	return n, err
+}
+
 // GetTLSConfig converts this Config into tls.Config.
 func (c *Config) GetTLSConfig(opts ...Option) *tls.Config {
 	root, err := c.getCertPool()
@@ -213,24 +282,24 @@ func (c *Config) GetTLSConfig(opts ...Option) *tls.Config {
 		}
 	}
 
-	clientRoot, err := c.loadSelfCertPool(Certificate_AUTHORITY_VERIFY_CLIENT)
-	if err != nil {
-		newError("failed to load client root certificate").AtError().Base(err).WriteToLog()
-	}
-
 	var echConfigs []tls.ECHConfig
 	if c.EnableEch {
 		echPEMKey := fmt.Sprintf("-----BEGIN ECH CONFIGS-----\n%s\n-----END ECH CONFIGS-----", ECH)
 
 		block, rest := pem.Decode([]byte(echPEMKey))
 		if block == nil || block.Type != "ECH CONFIGS" || len(rest) > 0 {
-			newError("failed to PEM-decode the ECH configs").AtError().WriteToLog()
+			newError("failed to PEM-decode the ECH configs").AtError().Base(err).WriteToLog()
 		}
 
 		echConfigs, err = tls.UnmarshalECHConfigs(block.Bytes)
 		if err != nil {
-			newError("failed to unmarshal ECH configs").AtError().WriteToLog()
+			newError("failed to unmarshal ECH configs").AtError().Base(err).WriteToLog()
 		}
+	}
+
+	clientRoot, err := c.loadSelfCertPool(Certificate_AUTHORITY_VERIFY_CLIENT)
+	if err != nil {
+		newError("failed to load client root certificate").AtError().Base(err).WriteToLog()
 	}
 
 	config := &tls.Config{
@@ -243,6 +312,10 @@ func (c *Config) GetTLSConfig(opts ...Option) *tls.Config {
 		ClientCAs:              clientRoot,
 		ECHEnabled:             c.EnableEch,
 		ClientECHConfigs:       echConfigs,
+	}
+
+	if c.AllowInsecureIfPinnedPeerCertificate && c.PinnedPeerCertificateChainSha256 != nil {
+		config.InsecureSkipVerify = true
 	}
 
 	for _, opt := range opts {
@@ -267,6 +340,28 @@ func (c *Config) GetTLSConfig(opts ...Option) *tls.Config {
 
 	if c.VerifyClientCertificate {
 		config.ClientAuth = tls.RequireAndVerifyClientCert
+	}
+
+	switch c.MinVersion {
+	case Config_TLS1_0:
+		config.MinVersion = tls.VersionTLS10
+	case Config_TLS1_1:
+		config.MinVersion = tls.VersionTLS11
+	case Config_TLS1_2:
+		config.MinVersion = tls.VersionTLS12
+	case Config_TLS1_3:
+		config.MinVersion = tls.VersionTLS13
+	}
+
+	switch c.MaxVersion {
+	case Config_TLS1_0:
+		config.MaxVersion = tls.VersionTLS10
+	case Config_TLS1_1:
+		config.MaxVersion = tls.VersionTLS11
+	case Config_TLS1_2:
+		config.MaxVersion = tls.VersionTLS12
+	case Config_TLS1_3:
+		config.MaxVersion = tls.VersionTLS13
 	}
 	return config
 }

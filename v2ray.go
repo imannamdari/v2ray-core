@@ -3,10 +3,11 @@ package core
 import (
 	"context"
 	"reflect"
-	"sync"
+	sync "sync"
 
 	"github.com/imannamdari/v2ray-core/v5/common"
 	"github.com/imannamdari/v2ray-core/v5/common/environment"
+	"github.com/imannamdari/v2ray-core/v5/common/environment/systemnetworkimpl"
 	"github.com/imannamdari/v2ray-core/v5/common/environment/transientstorageimpl"
 	"github.com/imannamdari/v2ray-core/v5/common/serial"
 	"github.com/imannamdari/v2ray-core/v5/features"
@@ -141,6 +142,18 @@ func AddOutboundHandler(server *Instance, config *OutboundHandlerConfig) error {
 	return nil
 }
 
+func RemoveOutboundHandler(server *Instance, tag string) error {
+	outboundManager := server.GetFeature(outbound.ManagerType()).(outbound.Manager)
+	if err := outboundManager.RemoveHandler(server.ctx, tag); err != nil {
+		return err
+	}
+
+	if err := server.env.DropProxyEnvironment("o" + tag); err != nil {
+		return err
+	}
+	return nil
+}
+
 func addOutboundHandlers(server *Instance, configs []*OutboundHandlerConfig) error {
 	for _, outboundConfig := range configs {
 		if err := AddOutboundHandler(server, outboundConfig); err != nil {
@@ -191,7 +204,8 @@ func initInstanceWithConfig(config *Config, server *Instance) (bool, error) {
 		return true, err
 	}
 
-	server.env = environment.NewRootEnvImpl(server.ctx, transientstorageimpl.NewScopedTransientStorageImpl())
+	defaultNetworkImpl := systemnetworkimpl.NewSystemNetworkDefault()
+	server.env = environment.NewRootEnvImpl(server.ctx, transientstorageimpl.NewScopedTransientStorageImpl(), defaultNetworkImpl.Dialer(), defaultNetworkImpl.Listener())
 
 	for _, appSettings := range config.App {
 		settings, err := serial.GetInstanceOf(appSettings)

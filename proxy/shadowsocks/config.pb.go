@@ -1,14 +1,13 @@
 package shadowsocks
 
 import (
-	reflect "reflect"
-	sync "sync"
-
 	net "github.com/imannamdari/v2ray-core/v5/common/net"
 	packetaddr "github.com/imannamdari/v2ray-core/v5/common/net/packetaddr"
 	protocol "github.com/imannamdari/v2ray-core/v5/common/protocol"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -152,7 +151,7 @@ type ServerConfig struct {
 	// UdpEnabled specified whether or not to enable UDP for Shadowsocks.
 	// Deprecated. Use 'network' field.
 	//
-	// Deprecated: Do not use.
+	// Deprecated: Marked as deprecated in proxy/shadowsocks/config.proto.
 	UdpEnabled     bool                      `protobuf:"varint,1,opt,name=udp_enabled,json=udpEnabled,proto3" json:"udp_enabled,omitempty"`
 	User           *protocol.User            `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	Network        []net.Network             `protobuf:"varint,3,rep,packed,name=network,proto3,enum=v2ray.core.common.net.Network" json:"network,omitempty"`
@@ -191,7 +190,7 @@ func (*ServerConfig) Descriptor() ([]byte, []int) {
 	return file_proxy_shadowsocks_config_proto_rawDescGZIP(), []int{1}
 }
 
-// Deprecated: Do not use.
+// Deprecated: Marked as deprecated in proxy/shadowsocks/config.proto.
 func (x *ServerConfig) GetUdpEnabled() bool {
 	if x != nil {
 		return x.UdpEnabled

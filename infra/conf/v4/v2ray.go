@@ -1,7 +1,10 @@
 package v4
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
+	"path/filepath"
 	"strings"
 
 	"google.golang.org/protobuf/types/known/anypb"
@@ -20,6 +23,7 @@ import (
 	"github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/dns"
 	"github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/log"
 	"github.com/imannamdari/v2ray-core/v5/infra/conf/synthetic/router"
+	"github.com/imannamdari/v2ray-core/v5/infra/conf/v5cfg"
 )
 
 var (
@@ -31,6 +35,7 @@ var (
 		"vless":         func() interface{} { return new(VLessInboundConfig) },
 		"vmess":         func() interface{} { return new(VMessInboundConfig) },
 		"trojan":        func() interface{} { return new(TrojanServerConfig) },
+		"hysteria2":     func() interface{} { return new(Hysteria2ServerConfig) },
 	}, "protocol", "settings")
 
 	outboundConfigLoader = loader.NewJSONConfigLoader(loader.ConfigCreatorCache{
@@ -42,6 +47,7 @@ var (
 		"vless":       func() interface{} { return new(VLessOutboundConfig) },
 		"vmess":       func() interface{} { return new(VMessOutboundConfig) },
 		"trojan":      func() interface{} { return new(TrojanClientConfig) },
+		"hysteria2":   func() interface{} { return new(Hysteria2ClientConfig) },
 		"dns":         func() interface{} { return new(DNSOutboundConfig) },
 		"loopback":    func() interface{} { return new(LoopbackConfig) },
 	}, "protocol", "settings")
@@ -121,7 +127,7 @@ func (c *InboundDetourConfig) Build() (*core.InboundHandlerConfig, error) {
 	} else {
 		// Listen on specific IP or Unix Domain Socket
 		receiverSettings.Listen = c.ListenOn.Build()
-		listenDS := c.ListenOn.Family().IsDomain() && (c.ListenOn.Domain()[0] == '/' || c.ListenOn.Domain()[0] == '@')
+		listenDS := c.ListenOn.Family().IsDomain() && (filepath.IsAbs(c.ListenOn.Domain()) || c.ListenOn.Domain()[0] == '@')
 		listenIP := c.ListenOn.Family().IsIP() || (c.ListenOn.Family().IsDomain() && c.ListenOn.Domain() == "localhost")
 		switch {
 		case listenIP:
@@ -480,15 +486,12 @@ func (c *Config) Build() (*core.Config, error) {
 
 	// Load Additional Services that do not have a json translator
 
-	if msg, err := c.BuildServices(c.Services); err != nil {
-		developererr := newError("Loading a V2Ray Features as a service is intended for developers only. " +
-			"This is used for developers to prototype new features or for an advanced client to use special features in V2Ray," +
-			" instead of allowing end user to enable it without special tool and knowledge.")
-		sb := strings.Builder{}
-		return nil, newError("Cannot load service").Base(developererr).Base(err).Base(newError(sb.String()))
-	} else { // nolint: revive
-		// Using a else here is required to keep msg in scope
-		config.App = append(config.App, msg...)
+	for serviceName, service := range c.Services {
+		servicePackedConfig, err := v5cfg.LoadHeterogeneousConfigFromRawJSON(context.Background(), "service", serviceName, *service)
+		if err != nil {
+			return nil, newError(fmt.Sprintf("failed to parse %v config in Services", serviceName)).Base(err)
+		}
+		config.App = append(config.App, serial.ToTypedMessage(servicePackedConfig))
 	}
 
 	var inbounds []InboundDetourConfig

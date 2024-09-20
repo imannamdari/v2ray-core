@@ -33,7 +33,7 @@ import (
 	// Developer preview features
 	_ "github.com/imannamdari/v2ray-core/v5/app/instman"
 	_ "github.com/imannamdari/v2ray-core/v5/app/observatory"
-	_ "github.com/imannamdari/v2ray-core/v5/app/restfulapi"
+	_ "github.com/imannamdari/v2ray-core/v5/app/tun"
 
 	// Inbound and outbound proxies.
 	_ "github.com/imannamdari/v2ray-core/v5/proxy/blackhole"
@@ -53,6 +53,9 @@ import (
 	_ "github.com/imannamdari/v2ray-core/v5/proxy/vlite/inbound"
 	_ "github.com/imannamdari/v2ray-core/v5/proxy/vlite/outbound"
 
+	_ "github.com/imannamdari/v2ray-core/v5/proxy/hysteria2"
+	_ "github.com/imannamdari/v2ray-core/v5/proxy/shadowsocks2022"
+
 	// Transports
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/domainsocket"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/grpc"
@@ -64,6 +67,22 @@ import (
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/tls/utls"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/udp"
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/websocket"
+
+	// Developer preview transports
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/request/assembly"
+
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/request/assembler/simple"
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/request/roundtripper/httprt"
+
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/request/assembler/packetconn"
+
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/request/stereotype/meek"
+
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/dtls"
+
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/httpupgrade"
+
+	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/hysteria2"
 
 	// Transport headers
 	_ "github.com/imannamdari/v2ray-core/v5/transport/internet/headers/http"
@@ -99,4 +118,21 @@ import (
 	_ "github.com/imannamdari/v2ray-core/v5/proxy/shadowsocks/simplified"
 	_ "github.com/imannamdari/v2ray-core/v5/proxy/socks/simplified"
 	_ "github.com/imannamdari/v2ray-core/v5/proxy/trojan/simplified"
+
+	// Subscription Supports
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/subscriptionmanager"
+
+	// Subscription Containers: general purpose
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/containers/base64urlline"
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/containers/dataurlsingle"
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/containers/jsonfieldarray"
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/containers/jsonfieldarray/jsonified"
+
+	// Subscription Fetchers
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/documentfetcher/dataurlfetcher"
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/documentfetcher/httpfetcher"
+
+	// Subscription Entries Converters
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/entries/nonnative"
+	_ "github.com/imannamdari/v2ray-core/v5/app/subscription/entries/outbound" // Natively Supported Outbound Format
 )

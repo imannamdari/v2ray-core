@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -15,6 +14,7 @@ import (
 	"github.com/imannamdari/v2ray-core/v5/common/cmdarg"
 	"github.com/imannamdari/v2ray-core/v5/common/platform"
 	"github.com/imannamdari/v2ray-core/v5/main/commands/base"
+	"github.com/imannamdari/v2ray-core/v5/main/plugins"
 )
 
 // CmdRun runs V2Ray with config
@@ -76,12 +76,26 @@ func setConfigFlags(cmd *base.Command) {
 
 func executeRun(cmd *base.Command, args []string) {
 	setConfigFlags(cmd)
+	var pluginFuncs []func() error
+	for _, plugin := range plugins.Plugins {
+		if f := plugin(cmd); f != nil {
+			pluginFuncs = append(pluginFuncs, f)
+		}
+	}
 	cmd.Flag.Parse(args)
 	printVersion()
 	configFiles = getConfigFilePath()
 	server, err := startV2Ray()
 	if err != nil {
 		base.Fatalf("Failed to start: %s", err)
+	}
+
+	for _, f := range pluginFuncs {
+		go func(f func() error) {
+			if err := f(); err != nil {
+				log.Print(err)
+			}
+		}(f)
 	}
 
 	if err := server.Start(); err != nil {
@@ -113,7 +127,7 @@ func dirExists(file string) bool {
 }
 
 func readConfDir(dirPath string, extension []string) cmdarg.Arg {
-	confs, err := ioutil.ReadDir(dirPath)
+	confs, err := os.ReadDir(dirPath)
 	if err != nil {
 		base.Fatalf("failed to read dir %s: %s", dirPath, err)
 	}
