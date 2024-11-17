@@ -10,13 +10,13 @@ For concealing the domain in TLS handshake, you should use ECH.
 ECH is an approach that can hide SNI or other critical info in TLS handshake. You can learn more about ECH [here](https://blog.cloudflare.com/handshake-encryption-endgame-an-ech-update).
 
 # How to Build
-You should use [cloudflare golang](https://github.com/cloudflare/cloudflare-go) for building the project.
+You should use [cloudflare golang](https://github.com/cloudflare/go) for building the project.
 Which it supports ECH for TLS handshake.
 
 Just clone the project, build it and replace your `/usr/local/go` folder with that.
 Something like scripts below:
 ```bash
-git clone https://github.com/cloudflare/cloudflare-go go && cd go/src
+git clone https://github.com/cloudflare/go go && cd go/src
 ./all.bash
 ```
 And then copy this `go` directory to your `/usr/local/go`
